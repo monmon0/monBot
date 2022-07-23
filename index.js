@@ -64,7 +64,7 @@ const options = {
 }
 
 // initialize and connect to the api
-const blocknative = new BlocknativeSdk.default(options)
+const blocknative = new BlocknativeSdk.SDK(options)
 
 
 // //**************************************************************************/
