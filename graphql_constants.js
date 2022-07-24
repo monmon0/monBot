@@ -3,7 +3,7 @@ const { request, gql } = require('graphql-request')
 
 
 
-    const GET_PROFILE = gql`query UserByPublicKey($publicKey: String!) {
+exports.GET_PROFILE = gql`query UserByPublicKey($publicKey: String!) {
         user: user_by_pk(publicKey: $publicKey) {
           ...UserFragment
         }
@@ -25,5 +25,3 @@ const { request, gql } = require('graphql-request')
         links
       }`
 
-
-      export {GET_PROFILE}; 

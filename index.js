@@ -7,22 +7,18 @@ const fndAbi = require('./fndAbi.json');
 const HDWalletProvider = require('@truffle/hdwallet-provider');
 const fs = require('fs');
 const axios = require('axios');
-
 const apiKey = 'ab229f86-095d-41d8-9d7d-5fda94c7fa4b';
 const gasApi = 'https://api.blocknative.com/gasprices/blockprices';
 
 const { request, gql, GraphQLClient } = require('graphql-request')
 const query_api = "https://hasura2.foundation.app/v1/graphql";
 const { GET_PROFILE } = require('./graphql_constants');
+const graphQlClient = new GraphQLClient(query_api, {})
 
 const Discord = require('discord.js');
 const TOKEN = "MTAwMDI0MDkzNDMwMDE1NjAwNg.GMdHTh.CxLvLoo_srRHblv5N5mo1taNQQlT7CozuPYZ8o"
 
 const { Client, GatewayIntentBits } = require('discord.js');
-
-
-const graphQlClient = new GraphQLClient(query_api, {})
-
 const client = new Discord.Client({
   intents: [
     GatewayIntentBits.Guilds,
@@ -85,7 +81,7 @@ const getProfile = async(author) => {
 
   response = await graphQlClient.request(GET_PROFILE, variables)
   console.log(response)
-  return response;
+  return response.name;
 }
 
 const fndAddress = '0xcda72070e455bb31c7690a170224ce43623d0b6f';
@@ -115,19 +111,24 @@ const watchAuction = async(auctionAuthor) => {
 
 // send listing message to designated chanel
 const sendListingMessage = async(author, price) => {
-  const actualPrice = web3.utils.fromWei(price, 'ether');
+  const actualPrice = Web3.utils.fromWei(price.toString(), 'ether');
   const channel = client.channels.cache.get("1000308793634205780");
+  const profile = await getProfile(author);
   await channel.send(
-    `
-    ================================================ \n
-    ${author} has listed a new piece for ${actualPrice} ETH \n
-    ================================================ \n
-    *insert url here that idk how to craft*`);
+    `───✱*.｡:｡✱*.:｡✧*.｡✰ ─── \n
+    **${profile}** is here to steal your ETH for **${actualPrice}** ETH \n
+    ┊ ⋆ ┊ . ┊ ┊ ┊ ⋆ ┊ . ┊ ┊\n
+    ┊ ⋆ ┊ . ┊ ┊ ┊ ⋆ ┊ . ┊ ┊ \n
+    ↳-ˏˋBID NOWˊˎ- ↴ \n
+    https://foundation.app/@${profile}
+    `);
   console.log('bot is sending message');
 }
 
 
 watchAuction(auctioneer);
+
+getProfile(auctioneer);
 
 client.login(TOKEN);
 
