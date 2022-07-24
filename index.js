@@ -16,6 +16,7 @@ const TOKEN = "MTAwMDI0MDkzNDMwMDE1NjAwNg.GMdHTh.CxLvLoo_srRHblv5N5mo1taNQQlT7Co
 
 const { Client, GatewayIntentBits } = require('discord.js');
 
+
 const client = new Discord.Client({
   intents: [
     GatewayIntentBits.Guilds,
@@ -49,7 +50,7 @@ const transactionHandler = async(event) => {
     console.log(event.transaction.contractCall.params.tokenId);
     console.log(event.transaction.contractCall.params.reservePrice);
     
-    // await sendListingMessage( {auctioneer-name}, event.transaction.contractCall.params.reservePrice);
+    await sendListingMessage(event.transaction.from, event.transaction.contractCall.params.reservePrice);
 //       await bidOnAuction(event.transaction.contractCall.params.nftContract, event.transaction.contractCall.params.tokenId, ;
 }
 
@@ -100,8 +101,14 @@ const watchAuction = async(auctionAuthor) => {
 
 // send listing message to designated chanel
 const sendListingMessage = async(author, price) => {
+  const actualPrice = web3.utils.fromWei(price, 'ether');
   const channel = client.channels.cache.get("1000308793634205780");
-  await channel.send(`${author} has listed a new piece for ${price}`);
+  await channel.send(
+    `
+    ================================================ \n
+    ${author} has listed a new piece for ${actualPrice} ETH \n
+    ================================================ \n
+    *insert url here that idk how to craft*`);
   console.log('bot is sending message');
 }
 // const bidOnAuction = async(nftContract, tokenId, price)=> {
@@ -121,6 +128,14 @@ const sendListingMessage = async(author, price) => {
 
 //   console.log(auctionId);
 // }
+
+client.on('messageCreate', async(message) => {
+  if(message.author.bot) return;
+  // if (message.content.startsWith('bid')) {
+    client.channels.cache.get("1000308793634205780").send('get rekt');
+    console.log('bid command received');
+  // }
+})
 
 
 watchAuction(auctioneer);

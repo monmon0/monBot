@@ -13,6 +13,7 @@
     "axios": "^0.27.2",
     "bnc-sdk": "^4.5.0",
     "discord.js": "^14.0.3",
+    "graphql-request": "^4.3.0",
     "truffle": "^5.5.18",
     "web3": "^1.7.3",
     "ws": "^8.8.0"
