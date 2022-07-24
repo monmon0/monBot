@@ -13,7 +13,7 @@ const gasApi = 'https://api.blocknative.com/gasprices/blockprices';
 
 const { request, gql, GraphQLClient } = require('graphql-request')
 const query_api = "https://hasura2.foundation.app/v1/graphql";
-
+const { GET_PROFILE } = require('./graphql_constants');
 
 const Discord = require('discord.js');
 const TOKEN = "MTAwMDI0MDkzNDMwMDE1NjAwNg.GMdHTh.CxLvLoo_srRHblv5N5mo1taNQQlT7CozuPYZ8o"
@@ -77,6 +77,17 @@ const blocknative = new BlocknativeSdk(options)
 //*************************************************************************/
 
 
+const getProfile = async(author) => {
+  const variables = {}
+  variables.publicKey = author
+
+  let response;
+
+  response = await graphQlClient.request(GET_PROFILE, variables)
+  console.log(response)
+  return response;
+}
+
 const fndAddress = '0xcda72070e455bb31c7690a170224ce43623d0b6f';
 
 // //todo change auctioneer to whoever is running an auction u want to watch
@@ -99,6 +110,8 @@ const watchAuction = async(auctionAuthor) => {
         watchAddress: true
     })
 }
+
+
 
 // send listing message to designated chanel
 const sendListingMessage = async(author, price) => {
