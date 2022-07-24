@@ -81,7 +81,7 @@ const getProfile = async(author) => {
 
   response = await graphQlClient.request(GET_PROFILE, variables)
   console.log(response)
-  return response.name;
+  return response.user.username;
 }
 
 const fndAddress = '0xcda72070e455bb31c7690a170224ce43623d0b6f';
@@ -125,6 +125,8 @@ const sendListingMessage = async(author, price) => {
   console.log('bot is sending message');
 }
 
+const username = getProfile(auctioneer);
+console.log(username);
 
 watchAuction(auctioneer);
 
