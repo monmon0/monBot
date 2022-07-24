@@ -81,7 +81,7 @@ const getProfile = async(author) => {
 
   response = await graphQlClient.request(GET_PROFILE, variables)
   console.log(response)
-  return response.user.username;
+  return response.data.user.username;
 }
 
 const fndAddress = '0xcda72070e455bb31c7690a170224ce43623d0b6f';
