@@ -11,11 +11,17 @@ const axios = require('axios');
 const apiKey = 'ab229f86-095d-41d8-9d7d-5fda94c7fa4b';
 const gasApi = 'https://api.blocknative.com/gasprices/blockprices';
 
+const { request, gql, GraphQLClient } = require('graphql-request')
+const query_api = "https://hasura2.foundation.app/v1/graphql";
+
+
 const Discord = require('discord.js');
 const TOKEN = "MTAwMDI0MDkzNDMwMDE1NjAwNg.GMdHTh.CxLvLoo_srRHblv5N5mo1taNQQlT7CozuPYZ8o"
 
 const { Client, GatewayIntentBits } = require('discord.js');
 
+
+const graphQlClient = new GraphQLClient(query_api, {})
 
 const client = new Discord.Client({
   intents: [
@@ -67,11 +73,6 @@ const options = {
 // initialize and connect to the api
 const blocknative = new BlocknativeSdk(options)
 
-
-// //**************************************************************************/
-// //*************************************************************************/
-
-
 //****************************** Bot Logic :-) *****************************/
 //*************************************************************************/
 
@@ -111,31 +112,6 @@ const sendListingMessage = async(author, price) => {
     *insert url here that idk how to craft*`);
   console.log('bot is sending message');
 }
-// const bidOnAuction = async(nftContract, tokenId, price)=> {
-//   const fndContract = await new web3.eth.Contract(fndAbi, fndAddress);
-//   const auctionId = await fndContract.methods.getReserveAuctionIdFor(nftContract, tokenId).call();
-//   //const sixNinePrice = price + 69000000000000000;
-//   try{
-//     console.log('BIDDING!!!');
-
-//     const bid = await fndContract.methods.placeBidV2(auctionId, bidPrice, REFERRER).send({from: web3.eth.accounts._provider.addresses[0], value: bidPrice});
-//     console.log('SENT BID!!');
-//     console.log(bid);
-//   } catch (e){
-//     //let error = JSON.parse(e.message);
-//     console.log(e);
-//   }
-
-//   console.log(auctionId);
-// }
-
-client.on('messageCreate', async(message) => {
-  if(message.author.bot) return;
-  // if (message.content.startsWith('bid')) {
-    client.channels.cache.get("1000308793634205780").send('get rekt');
-    console.log('bid command received');
-  // }
-})
 
 
 watchAuction(auctioneer);
@@ -166,3 +142,20 @@ client.login(TOKEN);
 // const web3 = new Web3(provider);
 
 // console.log(web3.eth.accounts._provider.addresses[0])
+// const bidOnAuction = async(nftContract, tokenId, price)=> {
+//   const fndContract = await new web3.eth.Contract(fndAbi, fndAddress);
+//   const auctionId = await fndContract.methods.getReserveAuctionIdFor(nftContract, tokenId).call();
+//   //const sixNinePrice = price + 69000000000000000;
+//   try{
+//     console.log('BIDDING!!!');
+
+//     const bid = await fndContract.methods.placeBidV2(auctionId, bidPrice, REFERRER).send({from: web3.eth.accounts._provider.addresses[0], value: bidPrice});
+//     console.log('SENT BID!!');
+//     console.log(bid);
+//   } catch (e){
+//     //let error = JSON.parse(e.message);
+//     console.log(e);
+//   }
+
+//   console.log(auctionId);
+// }
