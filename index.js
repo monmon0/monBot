@@ -24,12 +24,12 @@ const client = new Discord.Client({
     GatewayIntentBits.Guilds,
     GatewayIntentBits.GuildMessages,
   ]
-})
+}) 
 
 
 client.on('ready', () => {
   console.log(`Logged in as ${client.user.tag}!`);
-})
+}) 
 
 //****************************** Web3 config *******************************/
 //*************************************************************************/
@@ -52,7 +52,7 @@ const transactionHandler = async(event) => {
     console.log(event.transaction.contractCall.params.tokenId);
     console.log(event.transaction.contractCall.params.reservePrice);
     
-    await sendListingMessage(event.transaction.from, event.transaction.contractCall.params.reservePrice);
+   await sendListingMessage(event.transaction.from, event.transaction.contractCall.params.reservePrice, event.transaction.contractCall.params.nftContract, event.transaction.contractCall.params.tokenId);
 //       await bidOnAuction(event.transaction.contractCall.params.nftContract, event.transaction.contractCall.params.tokenId, ;
 }
 
@@ -81,7 +81,32 @@ const getProfile = async(author) => {
 
   response = await graphQlClient.request(GET_PROFILE, variables)
   console.log(response)
-  return response.data.user.username;
+
+  if(response.user){
+    return response.user.username;
+  } else {
+    return author;
+  }
+  
+}
+
+const getFndLink = async(author, profile, nftContract, tokenId) => {
+  const api = 'https://jr5ltvzcse-dsn.algolia.net/1/indexes/artworks_sort_default/query?x-algolia-agent=Algolia%20for%20JavaScript%20(4.12.1)%3B%20Browser%20(lite)&x-algolia-api-key=1ae2d43a2816a05df9d1e053907048bc&x-algolia-application-id=JR5LTVZCSE';
+  let query = {"query":"","facetFilters":["moderationStatus:ACTIVE","isDeleted:false",`creator.publicKey:${author}`],"filters":"","page":0,"hitsPerPage":48}
+  let response = await axios.post(api, query);
+  console.log(response);
+
+  let nftArray = response.data.hits;
+  let slug;
+  //for each nft in the array, check if it matches the nftContract and tokenId
+  for(let i = 0; i < nftArray.length; i++){
+    if(nftArray[i].tokenId == tokenId && nftArray[i].collection.contractAddress == nftContract) {
+      slug = nftArray[i].collection.slug;
+    }
+  }
+  const link = `https://foundation.app/${profile}/${slug}/${tokenId}`;
+  console.log(link);
+  return link;
 }
 
 const fndAddress = '0xcda72070e455bb31c7690a170224ce43623d0b6f';
@@ -110,27 +135,31 @@ const watchAuction = async(auctionAuthor) => {
 
 
 // send listing message to designated chanel
-const sendListingMessage = async(author, price) => {
+const sendListingMessage = async(author, price, nftContract, tokenId) => {
   const actualPrice = Web3.utils.fromWei(price.toString(), 'ether');
   const channel = client.channels.cache.get("1000308793634205780");
   const profile = await getProfile(author);
+  const link = await getFndLink(author, profile, nftContract, tokenId);
   await channel.send(
     `───✱*.｡:｡✱*.:｡✧*.｡✰ ─── \n
     **${profile}** is here to steal your ETH for **${actualPrice}** ETH \n
     ┊ ⋆ ┊ . ┊ ┊ ┊ ⋆ ┊ . ┊ ┊\n
     ┊ ⋆ ┊ . ┊ ┊ ┊ ⋆ ┊ . ┊ ┊ \n
     ↳-ˏˋBID NOWˊˎ- ↴ \n
-    https://foundation.app/@${profile}
+    ${link}
     `);
   console.log('bot is sending message');
 }
 
-const username = getProfile(auctioneer);
-console.log(username);
+
+//cant do await below so this wont work
+//const username = getProfile(auctioneer);
+
 
 watchAuction(auctioneer);
 
-getProfile(auctioneer);
+//getProfile(auctioneer);
+//getFndLink(auctioneer);
 
 client.login(TOKEN);
 
