@@ -4,7 +4,7 @@ const { clientId, guildId, token } = require('./config.json');
 
 const commands = [
 	new SlashCommandBuilder().setName('god').setDescription('God complex affirmation'),
-	new SlashCommandBuilder().setName('rekt').setDescription('Wish someone a nice rekt'),
+	new SlashCommandBuilder().setName('rekt').setDescription('Wish someone a nice rekt').addUserOption(option => option.setName('target').setDescription('Select a user')),
 	// new SlashCommandBuilder().setName('user').setDescription('Replies with user info!'),
 ]
 	.map(command => command.toJSON());

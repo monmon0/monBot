@@ -196,6 +196,7 @@ client.on('interactionCreate', async interaction => {
     const canvas = Canvas.createCanvas(400, 400);
 		const context = canvas.getContext('2d');
 
+    const user = interaction.options.getUser('target');
     const backgroundFile = await readFile('./wallpaper.jpeg');
     const background = new Canvas.Image();
     background.src = backgroundFile;
@@ -213,7 +214,7 @@ client.on('interactionCreate', async interaction => {
 		context.fillStyle = '#ffffff';
 		context.fillText(`${interaction.member.displayName}`, canvas.width / 2.5, canvas.height / 6);
 
-		context.fillText("hopes you get rekt", 20, canvas.height / 4);
+		context.fillText(`hopes you get rekt`, 20, canvas.height / 4);
 
 		context.beginPath();
 		context.arc(125, 125, 100, 0, Math.PI * 2, true);
@@ -223,7 +224,13 @@ client.on('interactionCreate', async interaction => {
     // Use the helpful Attachment class structure to process the file for you
     const attachment = new AttachmentBuilder(canvas.toBuffer('image/png'), { name: 'profile-image.png' });
 
-    interaction.reply({ files: [attachment] });
+    if(user == null){
+      interaction.reply(`**${interaction.member.displayName}** hopes you get rekt`)
+    }else{
+      interaction.reply(`**${interaction.member.displayName}** hopes ${user} get rekt`);
+    }
+    
+    interaction.channel.send({ files: [attachment] });
 
 	 } 
 
