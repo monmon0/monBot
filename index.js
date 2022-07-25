@@ -147,7 +147,7 @@ const watchAuction = async() => {
 // send listing message to designated chanel
 const sendListingMessage = async(author, price, nftContract, tokenId) => {
   const actualPrice = Web3.utils.fromWei(price.toString(), 'ether');
-  const channel = client.channels.cache.get("1000308793634205780"); // change to testing server
+  const channel = client.channels.cache.get("1000594845980700722"); // change to artisp server
   const profile = await getProfile(author);
   const link = await getFndLink(author, profile, nftContract, tokenId);
   await channel.send(
@@ -229,11 +229,7 @@ client.on('interactionCreate', async interaction => {
 
 });
 
-
 watchAuction();
-// getProfile(auctioneer);
 
-console.log(contents);
-console.log(contents.includes('0xc7993345f7De52d76fcc855923790c58CecE8B80'))
 client.login(token);
 
