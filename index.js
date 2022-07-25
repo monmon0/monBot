@@ -15,8 +15,20 @@ const query_api = "https://hasura2.foundation.app/v1/graphql";
 const { GET_PROFILE } = require('./graphql_constants');
 const graphQlClient = new GraphQLClient(query_api, {})
 
+const { SlashCommandBuilder, Routes, AttachmentBuilder } = require('discord.js');
+const { REST } = require('@discordjs/rest');
+const { token } = require('./config.json');
+
+const winnie = "https://c.tenor.com/MqIJqEF_ldEAAAAC/eyebrow-up-winnie-the-pooh.gif";
+const { readFile } = require('fs/promises');
+const Canvas = require('@napi-rs/canvas');
+
 const Discord = require('discord.js');
-const TOKEN = "MTAwMDI0MDkzNDMwMDE1NjAwNg.GMdHTh.CxLvLoo_srRHblv5N5mo1taNQQlT7CozuPYZ8o"
+// const TOKEN = "MTAwMDI0MDkzNDMwMDE1NjAwNg.GMdHTh.CxLvLoo_srRHblv5N5mo1taNQQlT7CozuPYZ8o"
+
+const {readFileSync, promises: fsPromises} = require('fs');
+
+const contents = readFileSync("./address.txt", 'utf-8').split('\n');
 
 const { Client, GatewayIntentBits } = require('discord.js');
 const client = new Discord.Client({
@@ -30,10 +42,6 @@ const client = new Discord.Client({
 client.on('ready', () => {
   console.log(`Logged in as ${client.user.tag}!`);
 }) 
-
-//****************************** Web3 config *******************************/
-//*************************************************************************/
-
 
 
 const auctionObject = {};
@@ -51,9 +59,12 @@ const transactionHandler = async(event) => {
     console.log(event.transaction.contractCall.params.nftContract);
     console.log(event.transaction.contractCall.params.tokenId);
     console.log(event.transaction.contractCall.params.reservePrice);
-    
+
+    console.log(contents.includes(event.transaction.from));
+  if(contents.includes(event.transaction.from)){
    await sendListingMessage(event.transaction.from, event.transaction.contractCall.params.reservePrice, event.transaction.contractCall.params.nftContract, event.transaction.contractCall.params.tokenId);
-//       await bidOnAuction(event.transaction.contractCall.params.nftContract, event.transaction.contractCall.params.tokenId, ;
+   console.log('sending listing message');
+  }
 }
 
 const options = {
@@ -107,6 +118,7 @@ const getFndLink = async(author, profile, nftContract, tokenId) => {
   const link = `https://foundation.app/${profile}/${slug}/${tokenId}`;
   console.log(link);
   return link;
+
 }
 
 const fndAddress = '0xcda72070e455bb31c7690a170224ce43623d0b6f';
@@ -115,7 +127,7 @@ const fndAddress = '0xcda72070e455bb31c7690a170224ce43623d0b6f';
 const auctioneer = '0xc7993345f7De52d76fcc855923790c58CecE8B80';
 
 
-const watchAuction = async(auctionAuthor) => {
+const watchAuction = async() => {
     await blocknative.configuration({
         scope: fndAddress,
         filters: [
@@ -125,7 +137,6 @@ const watchAuction = async(auctionAuthor) => {
             {
               "status": "confirmed"
             },
-            { "from": auctionAuthor }
           ],
         abi: fndAbi,
         watchAddress: true
@@ -133,11 +144,10 @@ const watchAuction = async(auctionAuthor) => {
 }
 
 
-
 // send listing message to designated chanel
 const sendListingMessage = async(author, price, nftContract, tokenId) => {
   const actualPrice = Web3.utils.fromWei(price.toString(), 'ether');
-  const channel = client.channels.cache.get("1000308793634205780");
+  const channel = client.channels.cache.get("1000308793634205780"); // change to testing server
   const profile = await getProfile(author);
   const link = await getFndLink(author, profile, nftContract, tokenId);
   await channel.send(
@@ -152,55 +162,78 @@ const sendListingMessage = async(author, price, nftContract, tokenId) => {
 }
 
 
-//cant do await below so this wont work
-//const username = getProfile(auctioneer);
 
 
-watchAuction(auctioneer);
-
-//getProfile(auctioneer);
-//getFndLink(auctioneer);
-
-client.login(TOKEN);
-
-
-
-
-
-
-
-
-
-/// I DONT THINK I NEED THIS
-
-// let provider = new HDWalletProvider({
-//   mnemonic: secret,
-//   providerOrUrl: 'https://eth-mainnet.public.blastapi.io',
-//   pollingInterval:1000,
-//   addressIndex: [1]
-// });
-
-
-//**************************************************************************/
+//********************SLASH COMMANDS BBY***************************************/
 //*************************************************************************/
 
-// const web3 = new Web3(provider);
+const applyText = (canvas, text) => {
+	const context = canvas.getContext('2d');
 
-// console.log(web3.eth.accounts._provider.addresses[0])
-// const bidOnAuction = async(nftContract, tokenId, price)=> {
-//   const fndContract = await new web3.eth.Contract(fndAbi, fndAddress);
-//   const auctionId = await fndContract.methods.getReserveAuctionIdFor(nftContract, tokenId).call();
-//   //const sixNinePrice = price + 69000000000000000;
-//   try{
-//     console.log('BIDDING!!!');
+	// Declare a base size of the font
+	let fontSize = 50;
 
-//     const bid = await fndContract.methods.placeBidV2(auctionId, bidPrice, REFERRER).send({from: web3.eth.accounts._provider.addresses[0], value: bidPrice});
-//     console.log('SENT BID!!');
-//     console.log(bid);
-//   } catch (e){
-//     //let error = JSON.parse(e.message);
-//     console.log(e);
-//   }
+	do {
+		// Assign the font to the context and decrement it so it can be measured again
+		context.font = `${fontSize -= 10}px sans-serif`;
+		// Compare pixel width of the text to the canvas minus the approximate avatar size
+	} while (context.measureText(text).width > canvas.width - 300);
 
-//   console.log(auctionId);
-// }
+	// Return the result to use in the actual canvas
+	return context.font;
+};
+
+client.on('interactionCreate', async interaction => {
+	if (!interaction.isChatInputCommand()) return;
+
+	const { commandName } = interaction;
+
+	if (commandName === 'god') {
+		await interaction.reply(`You are in indeed a god **${interaction.user.tag}**\n${winnie}`);
+
+	} else if (commandName === 'rekt') {
+		// await interaction.reply(`Server name: ${interaction.guild.name}\nTotal members: ${interaction.guild.memberCount}`);
+    const canvas = Canvas.createCanvas(400, 400);
+		const context = canvas.getContext('2d');
+
+    const backgroundFile = await readFile('./wallpaper.jpeg');
+    const background = new Canvas.Image();
+    background.src = backgroundFile;
+
+    // This uses the canvas dimensions to stretch the image onto the entire canvas
+    context.drawImage(background, 0, 0, canvas.width, canvas.height);
+
+		context.strokeStyle = '#0099ff';
+		context.strokeRect(0, 0, canvas.width, canvas.height);
+
+		// context.fillStyle = '#ffffff';
+		// context.fillText('Profile', canvas.width / 2.5, canvas.height / 3.5);
+
+		context.font = applyText(canvas, `${interaction.member.displayName}`);
+		context.fillStyle = '#ffffff';
+		context.fillText(`${interaction.member.displayName}`, canvas.width / 2.5, canvas.height / 6);
+
+		context.fillText("hopes you get rekt", 20, canvas.height / 4);
+
+		context.beginPath();
+		context.arc(125, 125, 100, 0, Math.PI * 2, true);
+		context.closePath();
+		context.clip();
+
+    // Use the helpful Attachment class structure to process the file for you
+    const attachment = new AttachmentBuilder(canvas.toBuffer('image/png'), { name: 'profile-image.png' });
+
+    interaction.reply({ files: [attachment] });
+
+	 } 
+
+});
+
+
+watchAuction();
+// getProfile(auctioneer);
+
+console.log(contents);
+console.log(contents.includes('0xc7993345f7De52d76fcc855923790c58CecE8B80'))
+client.login(token);
+

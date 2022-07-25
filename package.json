@@ -9,6 +9,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@discordjs/rest": "^1.0.0",
+    "@napi-rs/canvas": "^0.1.25",
     "@truffle/hdwallet-provider": "^2.0.9",
     "axios": "^0.27.2",
     "bnc-sdk": "^4.5.0",
