@@ -182,11 +182,13 @@ const applyText = (canvas, text) => {
 	// Return the result to use in the actual canvas
 	return context.font;
 };
-
+let wordleRecord = [];
+let contestantsRecord = [];
 client.on('interactionCreate', async interaction => {
 	if (!interaction.isChatInputCommand()) return;
 
 	const { commandName } = interaction;
+  
 
 	if (commandName === 'god') {
 		await interaction.reply(`You are in indeed a god **${interaction.user.tag}**\n${winnie}`);
@@ -197,6 +199,7 @@ client.on('interactionCreate', async interaction => {
 		const context = canvas.getContext('2d');
 
     const user = interaction.options.getUser('target');
+    
     const backgroundFile = await readFile('./wallpaper.jpeg');
     const background = new Canvas.Image();
     background.src = backgroundFile;
@@ -214,6 +217,8 @@ client.on('interactionCreate', async interaction => {
 		context.fillStyle = '#ffffff';
 		context.fillText(`${interaction.member.displayName}`, canvas.width / 2.5, canvas.height / 6);
 
+
+		context.font = applyText(canvas, `hopes you get rekt`);
 		context.fillText(`hopes you get rekt`, 20, canvas.height / 4);
 
 		context.beginPath();
@@ -232,7 +237,118 @@ client.on('interactionCreate', async interaction => {
     
     interaction.channel.send({ files: [attachment] });
 
-	 } 
+	 } else if (interaction.commandName === 'wordle') {
+    const wordleNum = interaction.options.getInteger('int')
+    const contestant = interaction.user.id
+    wordleRecord.push(wordleNum);
+    contestantsRecord.push(contestant);
+
+    if(wordleNum <= 3){
+      await interaction.reply({ content: `Your record of ${wordleNum}/6 is registered \n Congrats, <@${contestant}> have good chances of winning!`, ephemeral: true });
+    }else if(wordleNum <= 6){
+      await interaction.reply({ content: `Your record of ${wordleNum}/6 is registered \n Eh, <@${contestant}> sucks even in Spelling Bee aye?`, ephemeral: true });
+    }else{
+      await interaction.reply({ content: `Itzoke, Mon can introduce <@${contestant}> to her 6 yo cousin. \n You guys will hit it off with your vocab similarity`, ephemeral: true });
+    }
+	} 
+  else if (interaction.commandName === 'wordlegod' && interaction.user.id === "959190012480618566"){
+ 
+    const winnerList = [];
+    let todayWinner = Math.min(...wordleRecord);
+    if(todayWinner <= 6){
+      for(let i=0; i<wordleRecord.length;i++){
+        if(wordleRecord[i] === todayWinner){
+        winnerList.push(contestantsRecord[i]);
+      }
+      }
+      ////////
+      const canvas = Canvas.createCanvas(300, 450);
+      const context = canvas.getContext('2d');
+  
+      const backgroundFile = await readFile('./winner.jpeg');
+      const background = new Canvas.Image();
+      background.src = backgroundFile;
+    
+      // This uses the canvas dimensions to stretch the image onto the entire canvas
+      context.drawImage(background, 0, 0, canvas.width, canvas.height);
+  
+      context.strokeStyle = '#0099ff';
+      context.strokeRect(0, 0, canvas.width, canvas.height);
+  
+    
+      if(winnerList.length === 1){
+        let user = client.users.cache.get(winnerList[0]);
+        console.log(user.username)
+        context.font = '28px sans-serif';
+        context.fillStyle = '#ffffff';
+        context.fillText(`${user.username} be like:`, canvas.width / 5, canvas.height / 6);  
+  
+      } else{
+        context.font = '20px sans-serif';
+        context.fillStyle = '#ffffff';
+        for(let i=0; i< winnerList.length;i++){
+          let user = client.users.cache.get(winnerList[i]);
+          context.fillText(`${user.username},`, canvas.width / 10 + i*(canvas.width/winnerList.length), canvas.height / 8);
+        }
+  
+        context.font = '28px sans-serif';
+        context.fillStyle = '#ffffff';
+        context.fillText("BE LIKE:", canvas.width / 4, canvas.height / 5);
+      }
+  
+    // Use the helpful Attachment class structure to process the file for you
+      const attachment = new AttachmentBuilder(canvas.toBuffer('image/png'), { name: 'profile-image.png' });
+  
+      //////////
+      console.log(winnerList);
+      interaction.reply("THE RESULT ARE IN 🏆")
+      for(let i=0; i < winnerList.length; i++){
+        await interaction.channel.send(`.·:*¨༺ ༻¨*:·. \n Congrats <@${winnerList[i]}> for becoming **Wordle God** Of The day \n *ੈ✩‧₊˚ ALL HAIL <@${winnerList[i]}> with ${todayWinner}/6 •°. *࿐`)
+      }
+      await interaction.channel.send({ files: [attachment] });
+     
+  
+      for(let i=0; i<winnerList.length; i++){
+        const index = wordleRecord.indexOf(todayWinner);
+        if (index > -1) { // only splice array when item is found
+          wordleRecord.splice(index, 1); // 2nd parameter means remove one item only
+          contestantsRecord.splice(index, 1)
+        }
+        console.log(wordleRecord);
+      }
+      const contestantNum = contestantsRecord.length;
+      const date = interaction.options.getString('date')
+      if(contestantNum > 0){
+      interaction.channel.send(`┌──═━ Today ${date} Wordle Leaderboard┈━═──┐`)
+        for(let i=0; i<contestantNum; i++){
+        const instant = Math.min(...wordleRecord);
+        const index = wordleRecord.indexOf(instant);
+        if(i === 0){
+          interaction.channel.send(`<@${contestantsRecord[index]}> placed **2nd** with ${instant}/6. Very bery close, hope you get your revenge soon!`)
+        } else if(i === 1){
+          interaction.channel.send(`<@${contestantsRecord[index]}> placed **3rd** with ${instant}/6. Ah at least you made it to top 3!`)
+        }else if(index <=6){
+          const placing = i+2;
+          interaction.channel.send(`<@${contestantsRecord[index]}> placed **${placing}th** with ${instant}/6. Eh, who care what you placed if not top 3`)
+        }
+        else{
+          interaction.channel.send(`<@${contestantsRecord[index]}> has failed. Better luck next time or it can be really embarrassing`)
+        }
+        if (index > -1) { // only splice array when item is found
+          wordleRecord.splice(index, 1); // 2nd parameter means remove one item only
+          contestantsRecord.splice(index, 1)
+        }
+        console.log(wordleRecord);
+      }
+      }
+      interaction.channel.send(`╚══════════════《✧》══════════════╝ \n Sincere thank you to all participants \n This is all under the *friendly spirit* of the NYT Wordle \n https://www.nytimes.com/games/wordle/index.html`)
+    } else{
+      interaction.reply("What a dissapointment. We all failed. Human has failed as a race smh")
+    }
+
+    wordleRecord = [];
+    contestantsRecord = [];
+  }
 
 });
 
