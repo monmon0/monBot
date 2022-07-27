@@ -171,7 +171,7 @@ const applyText = (canvas, text) => {
 	const context = canvas.getContext('2d');
 
 	// Declare a base size of the font
-	let fontSize = 50;
+	let fontSize = 70;
 
 	do {
 		// Assign the font to the context and decrement it so it can be measured again
@@ -210,16 +210,13 @@ client.on('interactionCreate', async interaction => {
 		context.strokeStyle = '#0099ff';
 		context.strokeRect(0, 0, canvas.width, canvas.height);
 
-		// context.fillStyle = '#ffffff';
-		// context.fillText('Profile', canvas.width / 2.5, canvas.height / 3.5);
-
 		context.font = applyText(canvas, `${interaction.member.displayName}`);
 		context.fillStyle = '#ffffff';
 		context.fillText(`${interaction.member.displayName}`, canvas.width / 2.5, canvas.height / 6);
 
 
-		context.font = applyText(canvas, `hopes you get rekt`);
-		context.fillText(`hopes you get rekt`, 20, canvas.height / 4);
+		context.font = "28px sans-serif";
+		context.fillText(`hopes you get rekt`, canvas.width/4, canvas.height / 4);
 
 		context.beginPath();
 		context.arc(125, 125, 100, 0, Math.PI * 2, true);
@@ -229,7 +226,7 @@ client.on('interactionCreate', async interaction => {
     // Use the helpful Attachment class structure to process the file for you
     const attachment = new AttachmentBuilder(canvas.toBuffer('image/png'), { name: 'profile-image.png' });
 
-    if(user == null){
+    if(user === null){
       interaction.reply(`**${interaction.member.displayName}** hopes you get rekt`)
     }else{
       interaction.reply(`**${interaction.member.displayName}** hopes ${user} get rekt`);
