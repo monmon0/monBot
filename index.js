@@ -216,7 +216,7 @@ client.on('interactionCreate', async interaction => {
 
 
 		context.font = "28px sans-serif";
-		context.fillText(`hopes you get rekt`, canvas.width/4, canvas.height / 4);
+		context.fillText(`hopes you get rekt`, canvas.width/6, canvas.height / 4);
 
 		context.beginPath();
 		context.arc(125, 125, 100, 0, Math.PI * 2, true);
