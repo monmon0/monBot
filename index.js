@@ -249,7 +249,7 @@ client.on('interactionCreate', async interaction => {
     }
 	} 
   else if (interaction.commandName === 'wordlegod' && interaction.user.id === "959190012480618566"){
- 
+    console.log(wordleRecord);
     const winnerList = [];
     let todayWinner = Math.min(...wordleRecord);
     if(todayWinner <= 6){
@@ -304,7 +304,7 @@ client.on('interactionCreate', async interaction => {
       }
       await interaction.channel.send({ files: [attachment] });
      
-  
+      
       for(let i=0; i<winnerList.length; i++){
         const index = wordleRecord.indexOf(todayWinner);
         if (index > -1) { // only splice array when item is found
@@ -324,7 +324,7 @@ client.on('interactionCreate', async interaction => {
           interaction.channel.send(`<@${contestantsRecord[index]}> placed **2nd** with ${instant}/6. Very bery close, hope you get your revenge soon!`)
         } else if(i === 1){
           interaction.channel.send(`<@${contestantsRecord[index]}> placed **3rd** with ${instant}/6. Ah at least you made it to top 3!`)
-        }else if(index <=6){
+        }else if(instant <=6){
           const placing = i+2;
           interaction.channel.send(`<@${contestantsRecord[index]}> placed **${placing}th** with ${instant}/6. Eh, who care what you placed if not top 3`)
         }
@@ -342,7 +342,7 @@ client.on('interactionCreate', async interaction => {
     } else{
       interaction.reply("What a dissapointment. We all failed. Human has failed as a race smh")
       for(let i=0; i<wordleRecord.length; i++){
-      interaction.channel.send(`<@${contestantsRecord[i]} enters ${wordleRecord[i]}`)
+      interaction.channel.send(`<@${contestantsRecord[i]}> enters ${wordleRecord[i]}`)
       }
     }
 
