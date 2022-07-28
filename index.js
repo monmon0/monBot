@@ -341,6 +341,9 @@ client.on('interactionCreate', async interaction => {
       interaction.channel.send(`╚══════════════《✧》══════════════╝ \n Sincere thank you to all participants \n This is all under the *friendly spirit* of the NYT Wordle \n https://www.nytimes.com/games/wordle/index.html`)
     } else{
       interaction.reply("What a dissapointment. We all failed. Human has failed as a race smh")
+      for(let i=0; i<wordleRecord.length; i++){
+      interaction.channel.send(`<@${contestantsRecord[i]} enters ${wordleRecord[i]}`)
+      }
     }
 
     wordleRecord = [];
