@@ -252,6 +252,7 @@ client.on('interactionCreate', async interaction => {
     console.log(wordleRecord);
     const winnerList = [];
     let todayWinner = Math.min(...wordleRecord);
+    console.log(todayWinner);
     if(todayWinner <= 6){
       for(let i=0; i<wordleRecord.length;i++){
         if(wordleRecord[i] === todayWinner){
@@ -339,6 +340,9 @@ client.on('interactionCreate', async interaction => {
       }
       }
       interaction.channel.send(`╚══════════════《✧》══════════════╝ \n Sincere thank you to all participants \n This is all under the *friendly spirit* of the NYT Wordle \n https://www.nytimes.com/games/wordle/index.html`)
+
+      wordleRecord = [];
+      contestantsRecord = [];
     } else{
       interaction.reply("What a dissapointment. We all failed. Human has failed as a race smh")
       for(let i=0; i<wordleRecord.length; i++){
@@ -346,8 +350,6 @@ client.on('interactionCreate', async interaction => {
       }
     }
 
-    wordleRecord = [];
-    contestantsRecord = [];
   }
 
 });
