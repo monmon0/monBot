@@ -248,11 +248,13 @@ client.on('interactionCreate', async interaction => {
       await interaction.reply({ content: `Itzoke, Mon can introduce <@${contestant}> to her 6 yo cousin. \n You guys will hit it off with your vocab similarity`, ephemeral: true });
     }
 	} 
-  else if (interaction.commandName === 'wordlegod' && interaction.user.id === "959190012480618566"){
+  else if (interaction.commandName === 'wordlegod' && interaction.user.id === "959190012480618566" && wordleRecord.length > 0) {
     console.log(wordleRecord);
     const winnerList = [];
     let todayWinner = Math.min(...wordleRecord);
     console.log(todayWinner);
+
+
     if(todayWinner <= 6){
       for(let i=0; i<wordleRecord.length;i++){
         if(wordleRecord[i] === todayWinner){
@@ -299,7 +301,7 @@ client.on('interactionCreate', async interaction => {
   
       //////////
       console.log(winnerList);
-      interaction.reply("THE RESULT ARE IN 🏆")
+      await interaction.reply("THE RESULT ARE IN 🏆")
       for(let i=0; i < winnerList.length; i++){
         await interaction.channel.send(`.·:*¨༺ ༻¨*:·. \n Congrats <@${winnerList[i]}> for becoming **Wordle God** Of The day \n *ੈ✩‧₊˚ ALL HAIL <@${winnerList[i]}> with ${todayWinner}/6 •°. *࿐`)
       }
@@ -344,12 +346,12 @@ client.on('interactionCreate', async interaction => {
       wordleRecord = [];
       contestantsRecord = [];
     } else{
-      interaction.reply("What a dissapointment. We all failed. Human has failed as a race smh")
+      await interaction.reply("What a dissapointment. We all failed. Human has failed as a race smh")
+      console.log(wordleRecord);
       for(let i=0; i<wordleRecord.length; i++){
       interaction.channel.send(`<@${contestantsRecord[i]}> enters ${wordleRecord[i]}`)
       }
     }
-
   }
 
 });
