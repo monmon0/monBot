@@ -237,16 +237,21 @@ client.on('interactionCreate', async interaction => {
 	 } else if (interaction.commandName === 'wordle') {
     const wordleNum = interaction.options.getInteger('int')
     const contestant = interaction.user.id
-    wordleRecord.push(wordleNum);
-    contestantsRecord.push(contestant);
-
-    if(wordleNum <= 3){
-      await interaction.reply({ content: `Your record of ${wordleNum}/6 is registered \n Congrats, <@${contestant}> have good chances of winning!`, ephemeral: true });
-    }else if(wordleNum <= 6){
-      await interaction.reply({ content: `Your record of ${wordleNum}/6 is registered \n Eh, <@${contestant}> sucks even in Spelling Bee aye?`, ephemeral: true });
+    if(!contestantsRecord.includes(contestant)){
+      wordleRecord.push(wordleNum);
+      contestantsRecord.push(contestant);
+      if(wordleNum <= 3){
+        await interaction.reply({ content: `Your record of ${wordleNum}/6 is registered \n Congrats, <@${contestant}> have good chances of winning!`, ephemeral: true });
+      }else if(wordleNum <= 6){
+        await interaction.reply({ content: `Your record of ${wordleNum}/6 is registered \n Eh, <@${contestant}> sucks even in Spelling Bee aye?`, ephemeral: true });
+      }else{
+        await interaction.reply({ content: `Itzoke, Mon can introduce <@${contestant}> to her 6 yo cousin. \n You guys will hit it off with your vocab similarity`, ephemeral: true });
+      }
     }else{
-      await interaction.reply({ content: `Itzoke, Mon can introduce <@${contestant}> to her 6 yo cousin. \n You guys will hit it off with your vocab similarity`, ephemeral: true });
+      await interaction.reply("You have previously entered a record, if u wished to clear it, please contact Mon");
     }
+  
+    
 	} 
   else if (interaction.commandName === 'wordlegod' && interaction.user.id === "959190012480618566" && wordleRecord.length > 0) {
     console.log(wordleRecord);
