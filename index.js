@@ -267,10 +267,10 @@ client.on('interactionCreate', async interaction => {
       }
       }
       ////////
-      const canvas = Canvas.createCanvas(300, 450);
+      const canvas = Canvas.createCanvas(400, 400);
       const context = canvas.getContext('2d');
   
-      const backgroundFile = await readFile('./winner.jpeg');
+      const backgroundFile = await readFile('./winner.jpg');
       const background = new Canvas.Image();
       background.src = backgroundFile;
     
@@ -300,6 +300,8 @@ client.on('interactionCreate', async interaction => {
         context.fillStyle = '#ffffff';
         context.fillText("BE LIKE:", canvas.width / 4, canvas.height / 5);
       }
+
+      context.fillText("Everyone else:",  canvas.width / 4, canvas.height - canvas.height / 6);  
   
     // Use the helpful Attachment class structure to process the file for you
       const attachment = new AttachmentBuilder(canvas.toBuffer('image/png'), { name: 'profile-image.png' });
@@ -324,7 +326,7 @@ client.on('interactionCreate', async interaction => {
       const contestantNum = contestantsRecord.length;
       const date = interaction.options.getString('date')
       if(contestantNum > 0){
-      interaction.channel.send(`┌──═━ Today ${date} Wordle Leaderboard┈━═──┐`)
+        interaction.channel.send(`┌──═━ Today ${date} Wordle Leaderboard┈━═──┐`)
         for(let i=0; i<contestantNum; i++){
         const instant = Math.min(...wordleRecord);
         const index = wordleRecord.indexOf(instant);
@@ -343,8 +345,7 @@ client.on('interactionCreate', async interaction => {
           wordleRecord.splice(index, 1); // 2nd parameter means remove one item only
           contestantsRecord.splice(index, 1)
         }
-        console.log(wordleRecord);
-      }
+        }
       }
       interaction.channel.send(`╚══════════════《✧》══════════════╝ \n Sincere thank you to all participants \n This is all under the *friendly spirit* of the NYT Wordle \n https://www.nytimes.com/games/wordle/index.html`)
 
