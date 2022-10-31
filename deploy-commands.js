@@ -1,6 +1,8 @@
 const { SlashCommandBuilder, Routes } = require('discord.js');
 const { REST } = require('@discordjs/rest');
-const { clientId, guildId, token } = require('./config.json');
+const { clientId } = process.env.CLIENT_ID;
+const { guildId } = process.env.GUILD_ID;
+const { token } = process.env.TOKEN;
 
 const commands = [
 	new SlashCommandBuilder().setName('god').setDescription('God complex affirmation'),
