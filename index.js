@@ -1,4 +1,6 @@
 // For Node < v13 / CommonJS environment
+require("dotenv").config();
+
 const BlocknativeSdk = require('bnc-sdk');
 const WebSocket = require('ws');
 const Web3 = require('web3');
@@ -17,14 +19,13 @@ const graphQlClient = new GraphQLClient(query_api, {})
 
 const { SlashCommandBuilder, Routes, AttachmentBuilder } = require('discord.js');
 const { REST } = require('@discordjs/rest');
-const { token } = require('./config.json');
+const { token } = process.env.TOKEN
 
 const winnie = "https://c.tenor.com/MqIJqEF_ldEAAAAC/eyebrow-up-winnie-the-pooh.gif";
 const { readFile } = require('fs/promises');
 const Canvas = require('@napi-rs/canvas');
 
 const Discord = require('discord.js');
-// const TOKEN = "MTAwMDI0MDkzNDMwMDE1NjAwNg.GMdHTh.CxLvLoo_srRHblv5N5mo1taNQQlT7CozuPYZ8o"
 
 const {readFileSync, promises: fsPromises} = require('fs');
 
@@ -364,7 +365,7 @@ client.on('interactionCreate', async interaction => {
 
 watchAuction();
 
-client.login(token);
+client.login(process.env.TOKEN)
 
 
 
