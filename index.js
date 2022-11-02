@@ -19,7 +19,7 @@ const graphQlClient = new GraphQLClient(query_api, {})
 
 const { SlashCommandBuilder, Routes, AttachmentBuilder } = require('discord.js');
 const { REST } = require('@discordjs/rest');
-const { token } = process.env.TOKEN
+const token  = process.env.TOKEN
 
 const winnie = "https://c.tenor.com/MqIJqEF_ldEAAAAC/eyebrow-up-winnie-the-pooh.gif";
 const { readFile } = require('fs/promises');
