@@ -365,7 +365,7 @@ client.on('interactionCreate', async interaction => {
 
 watchAuction();
 
-client.login("MTAwMTAyMjMyMjEyNTMxNjE4Ng.GxCe49.tDiWoc6wZGWcCNzHafQOzCYsDNYeRxvtXa_n-U")
+client.login(process.env.TOKEN)
 
 
 
